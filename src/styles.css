@@ -2,6 +2,45 @@
 
 @import 'tailwindcss';
 
+@font-face {
+  font-family: "Montserrat";
+  src: url('/assets/fonts/montserrat-medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Fredoka";
+  src: url("/assets/fonts/fredoka-semiBold.ttf") format("truetype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Fredoka";
+  src: url("/assets/fonts/fredoka-bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@theme {
+  --font-montserrat: Montserrat, sans-serif;
+  --font-fredoka: Fredoka, sans-serif;
+  
+  --animate-fade-in: fade-in 0.3s ease-in-out;
+
+  @keyframes fade-in {
+    0% {
+      opacity: 0;
+    }
+    100% {
+      opacity: 1;
+    }
+  }
+}
+
+
 @plugin "daisyui" {
-   themes: autumn --default, dark --prefersdark;
+   themes: autumn --default, sunset --prefersdark;
  }
