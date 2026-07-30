@@ -1,0 +1,19 @@
+<div class="join flex justify-center items-center mt-10 mb-4">
+  <button 
+    class="join-item btn btn-neutral btn-soft" 
+    [disabled]="currentPage() === 1"
+    [routerLink]="[]"
+    [queryParams]="{ page: currentPage() - 1 }"
+  >
+    «
+  </button>
+  <button class="join-item btn text-neutral bg-base-100">Página {{ currentPage() }}</button>
+  <button 
+    class="join-item btn btn-neutral btn-soft" 
+    [disabled]="currentPage() === totalPages()"
+    [routerLink]="[]"
+    [queryParams]="{ page: currentPage() + 1 }"
+  >
+    »
+  </button>
+</div>
