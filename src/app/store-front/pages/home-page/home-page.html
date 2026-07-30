@@ -2,10 +2,12 @@
 <h1 class="text-3xl text-neutral font-montserrat font-bold">Todos los productos</h1>
 <h2 class="text-xl mb-5 font-montserrat">Para todos los gustos</h2>
 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 mt-2 gap-3 lg:gap-8">
-  <product-card />
-  <product-card />
-  <product-card />
-  <product-card />
+  @for (product of productsResource.value()?.products; track $index) {
+  <product-card [product]="product" />
+  } 
+  @empty {
+    <p>No hay productos</p>
+  }
 </div>
 
 </main>

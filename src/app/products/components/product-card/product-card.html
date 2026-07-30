@@ -1,14 +1,15 @@
 <div class="card lg:card-side bg-base-100 shadow-sm animate-fade-in">
-  <figure>
+  <figure class="h-78">
     <img
-      src="https://img.daisyui.com/images/stock/photo-1494232410401-ad00d5433cfa.webp"
-      alt="Album" />
+      [src]="product().images[0] | productImage"
+      [alt]="product().title"
+    />
   </figure>
   <div class="card-body">
-    <h2 class="card-title">New album is released!</h2>
-    <p>Click the button to listen on Spotiwhy app.</p>
+    <h2 class="card-title font-montserrat text-accent">{{ product().title }}</h2>
+    <p>{{ product().description | slice:0:100 }}...</p>
     <div class="card-actions justify-end">
-      <a [routerLink]="['/product', 't-shirt']" class="btn btn-primary">Más</a>
+      <a [routerLink]="['/product', product().slug]" class="btn btn-primary">Más</a>
     </div>
   </div>
 </div>
