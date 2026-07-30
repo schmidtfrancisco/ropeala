@@ -6,7 +6,9 @@
     />
   </figure>
   <div class="card-body">
-    <h2 class="card-title font-montserrat text-accent">{{ product().title }}</h2>
+    <a [routerLink]="['/product', product().slug]">
+      <h2 class="card-title font-montserrat text-accent hover:underline">{{ product().title }}</h2>
+    </a>
     <p>{{ product().description | slice:0:100 }}...</p>
     <div class="card-actions justify-end">
       <a [routerLink]="['/product', product().slug]" class="btn btn-primary">Más</a>

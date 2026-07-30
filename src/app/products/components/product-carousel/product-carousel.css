@@ -1,0 +1,28 @@
+.swiper {
+  width: auto;
+  height: calc(100svh-148px);
+  --swiper-pagination-color: var(--color-primary);
+  --swiper-navigation-color: var(--color-primary);
+}
+
+.swiper-button-prev,
+.swiper-button-next {
+  opacity: 0;
+  transition: all 0.2s ease;
+  pointer-events: none;
+}
+
+.swiper-button-prev {
+  transform: translateX(-10px);
+}
+
+.swiper-button-next {
+  transform: translateX(10px);
+}
+
+.swiper:hover .swiper-button-prev,
+.swiper:hover .swiper-button-next {
+  opacity: 1;
+  transform: translateX(0);
+  pointer-events: auto;
+}

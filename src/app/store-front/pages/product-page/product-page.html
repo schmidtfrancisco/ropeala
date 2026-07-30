@@ -1,1 +1,47 @@
-<p>product-page works!</p>,
+<main class="flex flex-col lg:flex-row gap-12 container px-4 sm:px-8 py-8">
+  @if (productResource.isLoading()) {
+  <div class="flex justify-center items-center h-[96svh]">
+    <span class="loading loading-spinner loading-lg"></span>
+  </div>
+  }
+
+  @if (productResource.hasValue()) {
+  <section class="sm:w-1/2">
+    <product-carousel [images]="productResource.value().images"></product-carousel>
+  </section>
+  <section class="flex flex-col gap-2 flex-1">
+    <h1 class="text-3xl text-neutral font-montserrat">{{ productResource.value().title }}</h1>
+    <p class="text-xl font-semibold">{{ productResource.value().price | currency:'USD' }}</p>
+    <div class="flex gap-2">
+      @for (tag of productResource.value().tags; track $index) {
+      <div class="badge badge-primary">{{ tag }}</div>
+      }
+    </div>
+    <div class="flex flex-col gap-2 mt-4">
+      <h2 class="text-lg font-semibold font-montserrat">Descripción</h2>
+      <p class="text-md text-gray-500">
+        {{ productResource.value().description }}
+      </p>
+    </div>
+    <div class="join rounded-selector mt-6">
+      @for (size of sizes; track size) {
+      <label class="join-item card bg-base-200 border-base-300" [class.pointer-events-none]="!availableSizes().includes(size)">
+        <input type="radio" value="sm" name="card-size-1"
+          [disabled]="!availableSizes().includes(size)" />
+        <div class="card-body p-2 md:p-6" [class.opacity-20]="!availableSizes().includes(size)">
+          <h2 class="card-title">{{size}}</h2>
+          <p>
+            {{
+            availableSizes().includes(size)
+            ? 'En stock'
+            : 'Sin stock'
+            }}
+          </p>
+        </div>
+      </label>
+      }
+    </div>
+    <button class="btn btn-neutral mt-8 w-full">Agregar al carrito</button>
+  </section>
+  }
+</main>

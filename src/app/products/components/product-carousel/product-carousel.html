@@ -1,0 +1,37 @@
+<!-- Slider main container -->
+<div class="swiper relative group" #swiperDiv>
+  <!-- Additional required wrapper -->
+  <div class="swiper-wrapper">
+    <!-- Slides -->
+    @for (imageName of images(); track imageName) {
+    <div class="swiper-slide">
+      <img [src]="imageName | productImage" class="h-full rounded-2xl object-cover">
+    </div>
+    }
+  </div>
+
+  <div class="swiper-pagination"></div>
+
+  <button #prevButton class="absolute left-4 top-1/2 -translate-y-1/2 z-10
+         flex h-11 w-11 items-center justify-center
+         rounded-full bg-white/90 shadow-lg backdrop-blur-sm
+         opacity-0 scale-95 pointer-events-none
+         transition-all duration-200
+         group-hover:opacity-100
+         group-hover:scale-100
+         group-hover:pointer-events-auto">
+    <lucide-icon [img]="ChevronLeft" class="w-6 h-6"></lucide-icon>
+  </button>
+
+  <button #nextButton class="absolute right-4 top-1/2 -translate-y-1/2 z-10
+         flex h-11 w-11 items-center justify-center cursor-pointer
+         rounded-full bg-white/90 shadow-lg backdrop-blur-sm
+         opacity-0 scale-95 pointer-events-none
+         transition-all duration-200
+         group-hover:opacity-100
+         group-hover:scale-100
+         group-hover:pointer-events-auto">
+    <lucide-icon [img]="ChevronRight" class="w-6 h-6"></lucide-icon>
+  </button>
+
+</div>
