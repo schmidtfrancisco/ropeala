@@ -5,3 +5,9 @@ export interface User {
   isActive: boolean;
   roles:    string[];
 }
+
+export interface NewUser {
+  email:    string;
+  fullName: string;
+  password: string;
+}

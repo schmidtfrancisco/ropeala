@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { AuthResponse } from '@auth/interfaces/auth-response.interface';
-import { User } from '@auth/interfaces/user.interface';
+import { NewUser, User } from '@auth/interfaces/user.interface';
 import { catchError, map, Observable, of, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { rxResource } from '@angular/core/rxjs-interop';
@@ -13,7 +13,7 @@ const BASE_URL = environment.apiBaseUrl;
 export class AuthService {
   private _authStatus = signal<AuthStatus>('checking');
   private _user = signal<User | null>(null);
-  private _token = signal<string | null>(null);
+  private _token = signal<string | null>(localStorage.getItem('token'));
 
   private http = inject(HttpClient);
 
@@ -51,10 +51,19 @@ export class AuthService {
       return of(false);
     }
 
-    return this.http.get<AuthResponse>(`${BASE_URL}/auth/check-status`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+    return this.http.get<AuthResponse>(`${BASE_URL}/auth/check-status`)
+    .pipe(
+      map(resp => this.handleAuthSuccess(resp)),
+      catchError(error => this.handleAuthError(error))
+    )
+  }
+
+  register(newUser: NewUser): Observable<boolean> {
+    const { email, password, fullName } = newUser;
+    return this.http.post<AuthResponse>(`${BASE_URL}/auth/register`, {
+      email: email,
+      password: password,
+      fullName: fullName,
     })
     .pipe(
       map(resp => this.handleAuthSuccess(resp)),
