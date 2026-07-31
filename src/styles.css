@@ -42,5 +42,5 @@
 
 
 @plugin "daisyui" {
-   themes: autumn --default, sunset --prefersdark;
+   themes: autumn --default, sunset;
  }

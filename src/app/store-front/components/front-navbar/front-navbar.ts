@@ -1,9 +1,14 @@
-import { Component } from '@angular/core';
+import { SlicePipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { AuthService } from '@auth/services/auth.service';
 
 @Component({
   selector: 'front-navbar',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, SlicePipe],
   templateUrl: './front-navbar.html',
 })
-export class FrontNavbar {}
+export class FrontNavbar {
+  authService = inject(AuthService);
+
+}
