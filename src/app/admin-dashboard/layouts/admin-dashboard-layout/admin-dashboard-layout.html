@@ -2,7 +2,7 @@
   <input id="my-drawer-4" type="checkbox" class="drawer-toggle inline" />
   <div class="drawer-content">
     <!-- Navbar -->
-    <nav class="navbar w-full bg-base-300">
+    <nav class="navbar w-full bg-base-100 shadow-sm">
       <label for="my-drawer-4" aria-label="open sidebar" class="btn btn-square btn-ghost drawer-button">
         <!-- Sidebar toggle icon -->
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linejoin="round" stroke-linecap="round"
@@ -28,16 +28,14 @@
     <label for="my-drawer-4" aria-label="close sidebar" class="drawer-overlay"></label>
     <div class="flex min-h-full flex-col items-center bg-base-200 is-drawer-close:w-24 is-drawer-open:w-64">
       <!-- Sidebar content here -->
-      <h1 class="text-4xl font-fredoka btn btn-primary btn-square btn-soft p-6 mt-2">R</h1>
+      <a routerLink="/">
+        <h1 class="text-4xl font-fredoka btn btn-primary btn-square btn-soft p-6 mt-2">R</h1>
+      </a>
       <ul class="menu w-full grow mt-2 gap-2">
         <!-- List item -->
         <li>
-          <a
-            class="flex gap-2 is-drawer-close:tooltip is-drawer-close:tooltip-right is-drawer-close:flex-col is-drawer-close:gap-1"
-            data-tip="Inicio"
-            routerLink="/admin/dashboard"
-            routerLinkActive="bg-neutral text-neutral-content"
-          >
+          <a class="flex gap-2 is-drawer-close:tooltip is-drawer-close:tooltip-right is-drawer-close:flex-col is-drawer-close:gap-1"
+            data-tip="Inicio" routerLink="/admin/dashboard" routerLinkActive="bg-neutral text-neutral-content">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
               class="icon icon-tabler icons-tabler-outline icon-tabler-home">
@@ -51,12 +49,8 @@
         </li>
 
         <li>
-          <a
-            class="flex gap-2 is-drawer-close:tooltip is-drawer-close:tooltip-right is-drawer-close:flex-col is-drawer-close:gap-1"
-            data-tip="Productos"
-            routerLink="/admin/products"
-            routerLinkActive="bg-neutral text-neutral-content"
-          >
+          <a class="flex gap-2 is-drawer-close:tooltip is-drawer-close:tooltip-right is-drawer-close:flex-col is-drawer-close:gap-1"
+            data-tip="Productos" routerLink="/admin/products" routerLinkActive="bg-neutral text-neutral-content">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
               class="icon icon-tabler icons-tabler-outline icon-tabler-home">
@@ -71,8 +65,7 @@
 
         <!-- List item -->
         <li>
-          <a
-            class="flex gap-2 is-drawer-close:tooltip is-drawer-close:tooltip-right is-drawer-close:flex-col is-drawer-close:gap-0.5"
+          <a class="flex gap-2 is-drawer-close:tooltip is-drawer-close:tooltip-right is-drawer-close:flex-col is-drawer-close:gap-0.5"
             data-tip="Nuevo">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -101,9 +94,7 @@
         <li>
           <button
             class="flex gap-2 btn btn-error btn-soft is-drawer-close:h-14 is-drawer-close:tooltip is-drawer-close:tooltip-right is-drawer-close:flex-col is-drawer-close:gap-0.5"
-            data-tip="Cerrar sesión"
-            (click)="logout()"
-          >
+            data-tip="Cerrar sesión" (click)="logout()">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
               class="icon icon-tabler icons-tabler-outline icon-tabler-logout">

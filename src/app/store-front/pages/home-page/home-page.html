@@ -4,11 +4,14 @@
 
   <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 mt-2 gap-3 lg:gap-8">
     @for (product of productsResource.value()?.products; track $index) {
-      <product-card [product]="product" />
+    <product-card [product]="product" />
     }
     @empty {
-      <p>No hay productos</p>
+    <p>No hay productos</p>
     }
   </div>
-  <app-pagination [totalPages]="productsResource.value()?.pages ?? 0" [currentPage]="paginationService.currentPage()" /> 
+  <div class="mt-6 mb-4 justify-center flex">
+    <app-pagination [totalPages]="productsResource.value()?.pages ?? 0"
+      [currentPage]="paginationService.currentPage()" />
+  </div>
 </main>

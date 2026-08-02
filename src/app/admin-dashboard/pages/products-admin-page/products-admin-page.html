@@ -1,1 +1,24 @@
-<p>products-admin-page works!</p>,
+<section class="flex justify-between">
+  <header>
+    <h1 class="text-2xl font-bold font-montserrat text-neutral">Listado de productos</h1>
+    <h3 class="text-lg font-semibold">
+      Total de productos: <span class="text-accent">{{ productsResource.value()?.count }}</span>
+    </h3>
+  </header>
+  <div class="flex items-center pr-8">
+    <select class="select select-bordered w-32" #amountSelect (change)="this.productsPerPage.set(+amountSelect.value)">
+      <option value="10">10</option>
+      <option value="20">20</option>
+      <option value="50">50</option>
+      <option value="100">100</option>
+    </select>
+    <app-pagination [currentPage]="paginationService.currentPage()" [totalPages]="productsResource.value()?.pages || 0"
+      class="ml-4" />
+  </div>
+</section>
+
+
+<section class="flex flex-col gap-4">
+
+  <products-table [products]="productsResource.value()?.products ?? []" class="mt-2 p-4" />
+</section>
