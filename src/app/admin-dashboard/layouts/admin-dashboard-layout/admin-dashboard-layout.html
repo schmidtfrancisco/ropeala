@@ -1,0 +1,123 @@
+<div class="drawer lg:drawer-open">
+  <input id="my-drawer-4" type="checkbox" class="drawer-toggle inline" />
+  <div class="drawer-content">
+    <!-- Navbar -->
+    <nav class="navbar w-full bg-base-300">
+      <label for="my-drawer-4" aria-label="open sidebar" class="btn btn-square btn-ghost drawer-button">
+        <!-- Sidebar toggle icon -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-linejoin="round" stroke-linecap="round"
+          stroke-width="2" fill="none" stroke="currentColor" class="my-1.5 inline-block size-4">
+          <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z"></path>
+          <path d="M9 4v16"></path>
+          <path d="M14 10l2 2l-2 2"></path>
+        </svg>
+      </label>
+      <div class="px-2">
+        <a class="flex btn btn-ghost text-xl" routerLink="/admin">
+          <span class="text-primary font-fredoka font-semibold text-3xl tracking-tight">Ropeala Dashboard</span>
+        </a>
+      </div>
+    </nav>
+    <!-- Page content here -->
+    <div class="p-4">
+      <router-outlet />
+    </div>
+  </div>
+
+  <div class="drawer-side is-drawer-close:overflow-visible">
+    <label for="my-drawer-4" aria-label="close sidebar" class="drawer-overlay"></label>
+    <div class="flex min-h-full flex-col items-center bg-base-200 is-drawer-close:w-24 is-drawer-open:w-64">
+      <!-- Sidebar content here -->
+      <h1 class="text-4xl font-fredoka btn btn-primary btn-square btn-soft p-6 mt-2">R</h1>
+      <ul class="menu w-full grow mt-2 gap-2">
+        <!-- List item -->
+        <li>
+          <a
+            class="flex gap-2 is-drawer-close:tooltip is-drawer-close:tooltip-right is-drawer-close:flex-col is-drawer-close:gap-1"
+            data-tip="Inicio"
+            routerLink="/admin/dashboard"
+            routerLinkActive="bg-neutral text-neutral-content"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-home">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+              <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+              <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+            </svg>
+            <span class="text-xs">Inicio</span>
+          </a>
+        </li>
+
+        <li>
+          <a
+            class="flex gap-2 is-drawer-close:tooltip is-drawer-close:tooltip-right is-drawer-close:flex-col is-drawer-close:gap-1"
+            data-tip="Productos"
+            routerLink="/admin/products"
+            routerLinkActive="bg-neutral text-neutral-content"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-home">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+              <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+              <path d="M9 21v-6a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v6" />
+            </svg>
+            <span class="text-xs">Productos</span>
+          </a>
+        </li>
+
+        <!-- List item -->
+        <li>
+          <a
+            class="flex gap-2 is-drawer-close:tooltip is-drawer-close:tooltip-right is-drawer-close:flex-col is-drawer-close:gap-0.5"
+            data-tip="Nuevo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-plus">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M12 5l0 14" />
+              <path d="M5 12l14 0" />
+            </svg>
+            <span class="text-xs">Nuevo</span>
+          </a>
+        </li>
+
+      </ul>
+      <ul class="menu w-full justify-end grow mt-2 gap-4">
+        <!-- List item -->
+        <li class="flex flex-row gap-2 is-drawer-close:justify-center items-center">
+          <div tabindex="0" class="btn btn-ghost btn-circle pointer-events-none avatar avatar-placeholder">
+            <div class="bg-neutral text-neutral-content w-12 rounded-lg">
+              <span>{{ user()?.fullName | slice:0:1 }}</span>
+            </div>
+          </div>
+          <span class="is-drawer-close:hidden font-semibold text-md pointer-events-none">{{ user()?.fullName }}</span>
+        </li>
+
+        <!-- List item -->
+        <li>
+          <button
+            class="flex gap-2 btn btn-error btn-soft is-drawer-close:h-14 is-drawer-close:tooltip is-drawer-close:tooltip-right is-drawer-close:flex-col is-drawer-close:gap-0.5"
+            data-tip="Cerrar sesión"
+            (click)="logout()"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-logout">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M14 8v-2a2 2 0 0 0 -2 -2h-7a2 2 0 0 0 -2 2v12a2 2 0 0 0 2 2h7a2 2 0 0 0 2 -2v-2" />
+              <path d="M9 12h12l-3 -3" />
+              <path d="M18 15l3 -3" />
+            </svg>
+            <span class="is-drawer-open:hidden text-xs">Salir</span>
+            <span class="is-drawer-close:hidden">Cerrar sesión</span>
+          </button>
+        </li>
+
+      </ul>
+    </div>
+  </div>
+</div>
