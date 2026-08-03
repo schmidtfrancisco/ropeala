@@ -82,20 +82,26 @@
     </div>
 
     <!-- Imágenes -->
-    <div class="flex flex-col gap-6 items-center 2xl:px-16">
+    <div class="flex flex-col gap-6 items-center 2xl:px-16 lg:max-w-1/2">
 
+      <product-carousel [images]="productImages()" class="block min-w-0 w-full lg:w-2/3" />
 
-      <product-carousel [images]="product().images" class="block min-w-0 w-full" />
+      <input type="file" multiple accept="image/*" class="file-input file-input-bordered w-2/3 mt-4"
+        (change)="onFilesChange(imagesInput.files)" #imagesInput />
 
-      <input type="file" class="file-input file-input-bordered w-2/3 mt-4" />
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        @for (image of tempImages(); track image) {
+        <img [src]="image" alt="Temporal image" class="w-full rounded-2xl object-cover" />
+        }
+      </div>
     </div>
   </div>
 </form>
 
 @if (wasSaved()) {
-  <div class="toast toast-top toast-center">
-    <div class="alert alert-success text-white">
-      <span>Datos guardados exitosamente</span>
-    </div>
+<div class="toast toast-top toast-center">
+  <div class="alert alert-success text-white">
+    <span>Datos guardados exitosamente</span>
   </div>
+</div>
 }

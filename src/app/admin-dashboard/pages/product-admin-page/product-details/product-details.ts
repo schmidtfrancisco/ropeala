@@ -1,4 +1,4 @@
-import { Component, inject, input, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductCarousel } from '@products/components/product-carousel/product-carousel';
 import { Product, Size } from '@products/interfaces/products-response.interface';
@@ -19,6 +19,13 @@ export class ProductDetails implements OnInit {
   fb = inject(FormBuilder);
   productsService = inject(ProductsService);
   wasSaved = signal(false);
+  tempImages = signal<string[]>([]);
+  productImages = computed<string[]>(() => [
+    ...this.product().images,
+    ...this.tempImages()
+  ])
+
+  imageFileList: FileList|null = null;
 
   productForm = this.fb.group({
     title: ['', Validators.required],
@@ -72,16 +79,29 @@ export class ProductDetails implements OnInit {
     };
 
     if (this.product().id === 'new') {
-      const product = await firstValueFrom(this.productsService.createProduct(productLike));
+      const product = await firstValueFrom(this.productsService.createProduct(productLike, this.imageFileList ?? undefined));
       this.router.navigate(['/admin/products', product.id]);
     } else {
-      await firstValueFrom(this.productsService.updateProduct(this.product().id, productLike));
+      await firstValueFrom(this.productsService.updateProduct(this.product().id, productLike, this.imageFileList ?? undefined));
     }
 
     this.wasSaved.set(true);
     setTimeout(() => {
       this.wasSaved.set(false);
     }, 3000);
+  }
+
+  onFilesChange(files: FileList | null) {
+    if (!files) {
+      this.tempImages.set([]);
+    }
+    this.imageFileList = files;
+    const imagesUrls = Array.from(files ?? []).map(file =>
+      URL.createObjectURL(file)
+    );
+
+    this.tempImages.set(imagesUrls);
+    console.log(this.productImages())
   }
 
 }

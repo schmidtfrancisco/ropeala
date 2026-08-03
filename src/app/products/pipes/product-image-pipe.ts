@@ -16,7 +16,9 @@ export class ProductImagePipe implements PipeTransform {
     }
 
     if (value) {
-      return `${BASE_URL}/files/product/${value}`
+      return value.startsWith('blob:')
+      ? value
+      : `${BASE_URL}/files/product/${value}`;
     }
 
     return PLACEHOLDER_IMAGE_URL;
