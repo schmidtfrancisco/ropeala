@@ -56,7 +56,7 @@
   </div>
   <div class="navbar-end gap-2">
     <!-- Theme controller -->
-    <label class="hidden sm:flex cursor-pointer gap-2">
+    <label class="hidden lg:flex cursor-pointer gap-2">
       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="5" />
@@ -100,14 +100,25 @@
       </div>
       <ul tabindex="-1" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow">
         <li class="font-medium px-2 mb-2">{{ authService.user()?.fullName }}</li>
-        <li><a>Settings</a></li>
+        @if (authService.user()!.roles.includes('admin')) {
+          <li><a routerLink="/admin/products">Dashboard</a></li>
+        }
         <button class="btn btn-sm btn-outline btn-error mt-2" (click)="authService.logout()">Cerrar sesión</button>
       </ul>
     </div>
     }
     @else {
-    <a routerLink="/auth/login" class="btn">Iniciar sesión</a>
-    <a routerLink="/auth/register" class="btn btn-neutral">Registrarse</a>
+    <a routerLink="/auth/login" class="btn hidden lg:flex">Iniciar sesión</a>
+    <a routerLink="/auth/register" class="btn btn-neutral hidden lg:flex">Registrarse</a>
+    <div class="dropdown dropdown-end">
+        <div tabindex="0" role="button" class="btn btn-ghost rounded-field lg:hidden">Cuenta</div>
+        <ul
+          tabindex="-1"
+          class="menu dropdown-content bg-base-200 rounded-box z-1 mt-4 w-52 gap-2 p-2 shadow-sm">
+          <li><a routerLink="/auth/login" class="btn btn-sm">Iniciar sesión</a></li>
+          <li><a routerLink="/auth/register" class="btn btn-neutral btn-sm">Registrarse</a></li>
+        </ul>
+      </div>
     }
   </div>
 </div>

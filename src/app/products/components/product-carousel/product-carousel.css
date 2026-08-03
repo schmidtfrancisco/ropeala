@@ -1,6 +1,9 @@
 .swiper {
-  width: auto;
-  height: calc(100svh-148px);
+  width: 100%;
+  max-width: 600px;
+  aspect-ratio: 1 / 1;
+  margin: auto;
+
   --swiper-pagination-color: var(--color-primary);
   --swiper-navigation-color: var(--color-primary);
 }

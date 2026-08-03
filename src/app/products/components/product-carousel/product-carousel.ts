@@ -1,12 +1,12 @@
 import { AfterViewInit, Component, ElementRef, input, viewChild } from '@angular/core';
 import { ProductImagePipe } from '@products/pipes/product-image-pipe';
+import { ChevronLeft, ChevronRight, LucideAngularModule } from 'lucide-angular';
 import Swiper from 'swiper';
 import 'swiper/css';
-import 'swiper/css/effect-cube'
+import 'swiper/css/effect-cube';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { EffectCards, EffectCube, Navigation, Pagination, Scrollbar } from 'swiper/modules';
-import { LucideAngularModule, ChevronLeft, ChevronRight } from 'lucide-angular';
+import { EffectCube, EffectCreative, Navigation, Pagination } from 'swiper/modules';
 
 
 @Component({

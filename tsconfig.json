@@ -9,6 +9,7 @@
       "@shared/*": ["./src/app/shared/*"],
       "@store-front/*": ["./src/app/store-front/*"],
       "@dashboard/*": ["./src/app/admin-dashboard/*"],
+      "@utils/*": ["./src/app/utils/*"]
     },
     "strict": true,
     "noImplicitOverride": true,

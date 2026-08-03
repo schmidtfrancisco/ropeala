@@ -1,4 +1,4 @@
-<main class="flex flex-col lg:flex-row gap-12 container px-4 sm:px-8 py-8">
+<main class="flex flex-col lg:flex-row gap-12 container px-4 sm:px-8 py-8 items-center h-">
   @if (productResource.isLoading()) {
   <div class="flex justify-center items-center h-[96svh]">
     <span class="loading loading-spinner loading-lg"></span>
@@ -6,8 +6,8 @@
   }
 
   @if (productResource.hasValue()) {
-  <section class="sm:w-1/2">
-    <product-carousel [images]="productResource.value().images"></product-carousel>
+  <section class="w-full lg:w-1/2">
+    <product-carousel [images]="productResource.value().images" class="block min-w-0 w-full" />
   </section>
   <section class="flex flex-col gap-2 flex-1">
     <h1 class="text-3xl text-neutral font-montserrat">{{ productResource.value().title }}</h1>
