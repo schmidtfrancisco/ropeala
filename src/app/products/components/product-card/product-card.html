@@ -1,15 +1,15 @@
 <div class="card lg:card-side bg-base-100 shadow-sm animate-fade-in">
-  <figure class="h-78">
+  <figure class="h-78 w-full">
     <img
       [src]="product().images[0] | productImage"
       [alt]="product().title"
     />
   </figure>
-  <div class="card-body">
+  <div class="card-body lg:max-w-1/2">
     <a [routerLink]="['/product', product().slug]">
       <h2 class="card-title font-montserrat text-accent hover:underline">{{ product().title }}</h2>
     </a>
-    <p>{{ product().description | slice:0:100 }}...</p>
+    <p>{{ product().description | slice:0:150 }}...</p>
     <div class="card-actions justify-end">
       <a [routerLink]="['/product', product().slug]" class="btn btn-primary">Más</a>
     </div>

@@ -1,4 +1,11 @@
-<main class="py-6 px-2">
+<main class="py-6 px-2 sm:px-4">
+  @if (productsResource.isLoading()) {
+  <div class="w-full h-[90svh] flex items-center justify-center gap-2">
+    <span class="font-montserrat font-semibold text-slate-700">Cargando productos</span>
+    <span class="loading loading-dots loading-xl"></span>
+  </div>
+  }
+  @else {
   <h1 class="text-3xl text-neutral font-montserrat font-bold">{{ gender() | titlecase}}</h1>
   <h2 class="text-xl mb-5 font-montserrat">Productos por categoría</h2>
   <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 mt-2 gap-3 lg:gap-8">
@@ -13,4 +20,5 @@
     <app-pagination [totalPages]="productsResource.value()?.pages ?? 0"
       [currentPage]="paginationService.currentPage()" />
   </div>
+  }
 </main>

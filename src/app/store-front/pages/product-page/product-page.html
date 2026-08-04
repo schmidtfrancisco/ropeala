@@ -1,7 +1,8 @@
-<main class="flex flex-col lg:flex-row gap-12 container px-4 sm:px-8 py-8 items-center h-">
+<main class="flex flex-col lg:flex-row gap-12 px-4 sm:px-8 py-8 min-h-[calc(100vh-80px)] items-center">
   @if (productResource.isLoading()) {
-  <div class="flex justify-center items-center h-[96svh]">
-    <span class="loading loading-spinner loading-lg"></span>
+  <div class="flex justify-center items-center gap-2 h-[96svh]">
+    <span class="font-montserrat font-semibold text-slate-700">Cargando producto</span>
+    <span class="loading loading-dots loading-xl"></span>
   </div>
   }
 
@@ -25,7 +26,7 @@
     </div>
     <div class="join rounded-selector mt-6">
       @for (size of sizes; track size) {
-      <label class="join-item card bg-base-200 border-base-300" [class.pointer-events-none]="!availableSizes().includes(size)">
+      <label class="join-item card bg-base-300 border-base-200" [class.pointer-events-none]="!availableSizes().includes(size)">
         <input type="radio" value="sm" name="card-size-1"
           [disabled]="!availableSizes().includes(size)" />
         <div class="card-body p-2 md:p-6" [class.opacity-20]="!availableSizes().includes(size)">
