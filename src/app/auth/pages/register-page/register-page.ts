@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { NewUser } from '@auth/interfaces/user.interface';
 import { AuthService } from '@auth/services/auth.service';
 import { FormRequestStatus } from '@shared/interfaces/form-request-status.interface';
@@ -8,7 +8,7 @@ import { FormRequestStatus } from '@shared/interfaces/form-request-status.interf
 
 @Component({
   selector: 'app-register-page',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './register-page.html',
 })
 export class RegisterPage {
