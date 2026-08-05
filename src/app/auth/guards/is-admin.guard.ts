@@ -12,7 +12,7 @@ export const isAdminGuard: CanMatchFn = async (
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  const isAuthenticated = await firstValueFrom(authService.checkStatus());
+  const isAuthenticated = (await firstValueFrom(authService.checkStatus())).success;
   
   const user = authService.user();
   if (isAuthenticated && user?.roles.includes(ROLE)) {

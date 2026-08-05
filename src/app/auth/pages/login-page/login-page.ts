@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from "@angular/router";
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService } from '@auth/services/auth.service';
+import { FormRequestStatus } from '@shared/interfaces/form-request-status.interface';
 
 @Component({
   selector: 'app-login-page',
@@ -10,10 +11,9 @@ import { AuthService } from '@auth/services/auth.service';
 })
 export class LoginPage {
   fb = inject(FormBuilder);
-  hasError = signal(false);
-  isPosting = signal(false);
   authService = inject(AuthService);
   router = inject(Router);
+  formRequestStatus = signal<FormRequestStatus>({ isLoading: false, error: null });
 
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -21,26 +21,37 @@ export class LoginPage {
   });
 
   onSubmit() {
+    this.formRequestStatus.set({ isLoading: true, error: null });
     if (this.loginForm.invalid) {
-      this.hasError.set(true);
+      this.formRequestStatus.set({ 
+        isLoading: false, 
+        error: 'Hay algunos campos inválidos'
+      });
       setTimeout(() => {
-        this.hasError.set(false);
+        this.formRequestStatus.set({ isLoading: false, error: null });
       }, 3000);
       return;
     }
 
     const { email = '', password = '' } = this.loginForm.value;
 
-    this.authService.login(email!, password!).subscribe(isAuthenticated => {
-      if (isAuthenticated) {
+    this.authService.login(email!, password!).subscribe(resp => {
+      if (resp.success) {
+        this.formRequestStatus.set({ isLoading: false, error: null });
         this.router.navigateByUrl('/');
         return;
       }
+      
+      const errorMessage = resp.error === 'Unauthorized'
+        ? 'El correo y/o contraseña son incorrectos'
+        : 'Ocurrió un error inesperado';
 
-      this.hasError.set(true);
+      this.formRequestStatus.set({ isLoading: false, error: errorMessage });
+
       setTimeout(() => {
-        this.hasError.set(false);
+        this.formRequestStatus.set({ isLoading: false, error: null });
       }, 3000);
+
     })
   }
 }

@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { AuthResponse } from '@auth/interfaces/auth-response.interface';
 import { NewUser, User } from '@auth/interfaces/user.interface';
@@ -38,7 +38,7 @@ export class AuthService {
   user = computed(() => this._user());
   token = computed(() => this._token());
 
-  login(email: string, password: string): Observable<boolean> {
+  login(email: string, password: string): Observable<ApiResponse> {
     return this.http.post<AuthResponse>(`${BASE_URL}/auth/login`, {
       email: email,
       password: password
@@ -50,11 +50,11 @@ export class AuthService {
     )
   }
 
-  checkStatus(): Observable<boolean> {
+  checkStatus(): Observable<ApiResponse> {
     const token = localStorage.getItem('token');
     if (!token) {
       this.logout();
-      return of(false);
+      return of({ success: false });
     }
 
     const cached = this.authStatusCache.get(token);
@@ -70,7 +70,7 @@ export class AuthService {
     )
   }
 
-  register(newUser: NewUser): Observable<boolean> {
+  register(newUser: NewUser): Observable<ApiResponse> {
     const { email, password, fullName } = newUser;
     return this.http.post<AuthResponse>(`${BASE_URL}/auth/register`, {
       email: email,
@@ -99,12 +99,19 @@ export class AuthService {
     this._token.set(token);
    
     localStorage.setItem('token', token);
-    return true;
+    const apiResponse: ApiResponse = {
+      success: true,
+    }
+    return apiResponse;
   }
 
-  private handleAuthError(error: any) {
+  private handleAuthError(errorResponse: HttpErrorResponse) {
     this.logout();
-    return of(false);
+    const apiResponse: ApiResponse = {
+      success: false,
+      error: errorResponse.error.error,
+    }
+    return of(apiResponse);
   }
 
   private saveInCache(response: AuthResponse) {

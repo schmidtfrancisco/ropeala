@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NewUser } from '@auth/interfaces/user.interface';
 import { AuthService } from '@auth/services/auth.service';
+import { FormRequestStatus } from '@shared/interfaces/form-request-status.interface';
 
 
 @Component({
@@ -12,10 +13,9 @@ import { AuthService } from '@auth/services/auth.service';
 })
 export class RegisterPage {
   fb = inject(FormBuilder);
-  hasError = signal(false);
-  isPosting = signal(false);
   authService = inject(AuthService);
   router = inject(Router);
+  formRequestStatus = signal<FormRequestStatus>({ isLoading: false, error: null });
 
   registerForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -24,12 +24,14 @@ export class RegisterPage {
   });
 
   onSubmit() {
-    this.isPosting.set(true);
+    this.formRequestStatus.set({ isLoading: true, error: null });
     if (this.registerForm.invalid) {
-      this.hasError.set(true);
-      this.isPosting.set(false);
+      this.formRequestStatus.set({ 
+        isLoading: false, 
+        error: 'Hay algunos campos inválidos'
+      });
       setTimeout(() => {
-        this.hasError.set(false);
+        this.formRequestStatus.set({ isLoading: false, error: null });
       }, 3000);
       return;
     }
@@ -41,18 +43,21 @@ export class RegisterPage {
       fullName: fullName!
     }
 
-    this.authService.register(newUser).subscribe(isRegistered => {
-      if (isRegistered) {
+    this.authService.register(newUser).subscribe(resp => {
+      if (resp.success) {
+        this.formRequestStatus.set({ isLoading: false, error: null });
         this.router.navigateByUrl('/');
-
-        this.isPosting.set(false);
+        
         return;
       }
 
-      this.hasError.set(true);
-      this.isPosting.set(false);
+      this.formRequestStatus.set({ 
+        isLoading: false, 
+        error: 'Ocurrió un error al crear el usuario' 
+      });
+
       setTimeout(() => {
-        this.hasError.set(false);
+        this.formRequestStatus.set({ isLoading: false, error: null });
       }, 3000);
     })
   }

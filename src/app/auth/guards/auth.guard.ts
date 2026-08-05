@@ -10,7 +10,7 @@ export const AuthGuard: CanMatchFn = async (
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  const isAuthenticated = await firstValueFrom(authService.checkStatus());
+  const isAuthenticated = (await firstValueFrom(authService.checkStatus())).success;
 
   if (isAuthenticated) {
     router.navigateByUrl('/');
