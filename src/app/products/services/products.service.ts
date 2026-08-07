@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Gender, Product, ProductsResponse } from '@products/interfaces/products-response.interface';
-import { forkJoin, map, Observable, of, switchMap, take, tap } from 'rxjs';
+import { catchError, forkJoin, map, Observable, of, switchMap, take, tap } from 'rxjs';
 import { environment } from '../../../environments/environment';
 import { User } from '@auth/interfaces/user.interface';
 
@@ -79,10 +79,9 @@ export class ProductsService {
       );
   }
   
-  createProduct(productLike: Partial<Product>, imageFiles?: File[]): Observable<Product> {
+  createProduct(productLike: Partial<Product>, imageFiles?: File[]): Observable<ApiResponse<Product>> {
     return this.uploadImages(imageFiles)
       .pipe(
-        tap(imageNames => console.log(imageNames)),
         map(imageNames => ({
           ...productLike,
           images: imageNames
@@ -90,11 +89,13 @@ export class ProductsService {
         switchMap(newProduct => 
           this.http.post<Product>(`${BASE_URL}/products`, newProduct)
         ),
-        tap(product => this.updateProductCache(product, false))
+        tap(product => this.updateProductCache(product, false)),
+        map(product => this.handleRequestSuccess(product)),
+        catchError(error => this.handleRequestError(error))
       );
   }
 
-  updateProduct(id: string, productLike: Partial<Product>, imageFiles?: File[]): Observable<Product> {
+  updateProduct(id: string, productLike: Partial<Product>, imageFiles?: File[]): Observable<ApiResponse<Product>> {
     const currentImages = productLike.images ?? [];
     return this.uploadImages(imageFiles)
       .pipe(
@@ -106,7 +107,9 @@ export class ProductsService {
         switchMap(updatedProduct => 
           this.http.patch<Product>(`${BASE_URL}/products/${id}`, updatedProduct)
         ),
-        tap(product => this.updateProductCache(product))
+        tap(product => this.updateProductCache(product)),
+        map(product => this.handleRequestSuccess(product)),
+        catchError(error => this.handleRequestError(error))
       )
   }
 
@@ -145,4 +148,20 @@ export class ProductsService {
       );
   }
 
+  private handleRequestError(error: any) {
+    const apiResponse: ApiResponse<Product> = {
+      success: false,
+      error: 'Ocurrió un error inesperado al guardar la información del producto.'
+    }
+    return of(apiResponse);
+  }
+
+  private handleRequestSuccess(product: Product) {
+    const apiResponse: ApiResponse<Product> = {
+      success: true,
+      error: '',
+      response: product
+    }
+    return apiResponse;
+  }
 }

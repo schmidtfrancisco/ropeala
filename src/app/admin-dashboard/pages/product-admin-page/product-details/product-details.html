@@ -2,10 +2,14 @@
   <header class="flex items-center justify-between ">
     <h1 class="text-2xl font-bold text-neutral font-montserrat">{{ product().title }}</h1>
     <div class="flex justify-end h-12">
-      <button class="btn btn-neutral lg:w-45" type="submit">
-        <!-- <span class="loading loading-spinner loading-sm"></span> -->
-
-        Guardar
+      <button class="btn btn-neutral lg:w-45" type="submit" [disabled]="formRequestStatus().isLoading">
+        @if (formRequestStatus().isLoading) {
+        Cargando
+        <span class="loading loading-spinner loading-md"></span>
+        }
+        @else {
+          Guardar
+        }
       </button>
     </div>
   </header>
@@ -104,7 +108,8 @@
 
     <!-- Imágenes -->
     <div class="flex flex-col gap-6 items-center 2xl:px-16 lg:max-w-1/2 relative">
-      <product-carousel [images]="productImages()" [loop]=" false" [deleteOption]="true" (deleteImage)="onImageDeletion($event)" class="block min-w-0 w-full lg:w-2/3" />
+      <product-carousel [images]="productImages()" [loop]=" false" [deleteOption]="true"
+        (deleteImage)="onImageDeletion($event)" class="block min-w-0 w-full lg:w-2/3" />
 
       <input type="file" multiple accept="image/*" class="file-input file-input-bordered w-2/3 mt-4"
         (change)="onFilesChange(imagesInput.files)" #imagesInput />
@@ -113,15 +118,16 @@
         @for (image of tempImagesUrls(); track image) {
         <div class="relative">
           <img [src]="image" alt="Temporal image" class="w-full rounded-2xl object-cover" />
-          <button type="button" (click)="onImageDeletion(image)" class="absolute btn btn-circle btn-soft btn-error btn-xs top-2 right-2 z-2">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-            class="icon icon-tabler icons-tabler-outline icon-tabler-x">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path d="M18 6l-12 12" />
-            <path d="M6 6l12 12" />
-          </svg>
-        </button>
+          <button type="button" (click)="onImageDeletion(image)"
+            class="absolute btn btn-circle btn-soft btn-error btn-xs top-2 right-2 z-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-x">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M18 6l-12 12" />
+              <path d="M6 6l12 12" />
+            </svg>
+          </button>
         </div>
         }
       </div>
@@ -129,10 +135,20 @@
   </div>
 </form>
 
-@if (wasSaved()) {
-<div class="toast toast-top toast-center">
-  <div class="alert alert-success text-white">
-    <span>Datos guardados exitosamente</span>
-  </div>
+@if (formRequestStatus().completedSuccessfully) {
+
+<div role="alert" class="alert alert-success text-white animate-fade-in fixed bottom-5 right-5 w-52 shadow-2xl">
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-circle-check"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M3 12a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M9 12l2 2l4 -4" /></svg>
+  <span>Datos guardados exitosamente</span>
+</div>
+}
+
+@if (formRequestStatus().error) {
+<div role="alert" class="alert alert-error animate-fade-in fixed bottom-5 right-5 w-52 shadow-2xl">
+  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 shrink-0 stroke-current" fill="none" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+      d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+  </svg>
+  <span>{{formRequestStatus().error}}</span>
 </div>
 }

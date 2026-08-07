@@ -8,6 +8,9 @@ import { ProductsService } from '@products/services/products.service';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { FormRequestStatus } from '@shared/interfaces/form-request-status.interface';
+
+const INITIAL_FORM_STATUS: FormRequestStatus = { isLoading: false, error: null, completedSuccessfully: false }
 
 @Component({
   selector: 'product-details',
@@ -19,7 +22,7 @@ export class ProductDetails implements OnInit {
   router = inject(Router);
   fb = inject(FormBuilder);
   productsService = inject(ProductsService);
-  wasSaved = signal(false);
+  formRequestStatus = signal<FormRequestStatus>(INITIAL_FORM_STATUS);
   imagesInput = viewChild.required<ElementRef>('imagesInput');
   productForm = this.fb.group({
     title: ['', Validators.required],
@@ -40,7 +43,7 @@ export class ProductDetails implements OnInit {
   imageFilesMap = signal<Map<string, File>>(new Map());
   tempImagesUrls = computed(() => Array.from(this.imageFilesMap().keys()));
   productImages = computed<string[]>(() => [
-    ...(this.existingImages() ?? [] ),
+    ...(this.existingImages() ?? []),
     ...this.imageFilesMap().keys()
   ])
 
@@ -71,8 +74,9 @@ export class ProductDetails implements OnInit {
   async onSubmit() {
     this.productForm.markAllAsTouched();
     const isValid = this.productForm.valid;
-
     if (!isValid) return;
+
+    this.formRequestStatus.set({ isLoading: true, error: null, completedSuccessfully: false });
     const formValue = this.productForm.value;
     const productLike: Partial<Product> = {
       ...(formValue as any),
@@ -84,17 +88,32 @@ export class ProductDetails implements OnInit {
     };
 
     const imageFiles = Array.from(this.imageFilesMap().values());
-    console.log(imageFiles)
+    let apiResponse;
     if (this.product().id === 'new') {
-      const product = await firstValueFrom(this.productsService.createProduct(productLike, imageFiles));
-      this.router.navigate(['/admin/products', product.id]);
+      apiResponse = await firstValueFrom(this.productsService.createProduct(productLike, imageFiles));
     } else {
-      await firstValueFrom(this.productsService.updateProduct(this.product().id, productLike, imageFiles));
+      apiResponse = await firstValueFrom(this.productsService.updateProduct(this.product().id, productLike, imageFiles));
     }
 
-    this.wasSaved.set(true);
+    if (!apiResponse.success) {
+      this.formRequestStatus.set({
+        isLoading: false,
+        error: apiResponse.error ?? 'Error',
+        completedSuccessfully: false
+      });
+      return;
+    }
+    console.log(apiResponse.response?.id)
+
+    this.router.navigate(['/admin/products', apiResponse.response!.id]);
+
+    this.formRequestStatus.set({
+      isLoading: false,
+      error: '',
+      completedSuccessfully: true
+    });
     setTimeout(() => {
-      this.wasSaved.set(false);
+      this.formRequestStatus.set(INITIAL_FORM_STATUS);
     }, 3000);
   }
 
@@ -130,11 +149,9 @@ export class ProductDetails implements OnInit {
 
     const productImages = this.productForm.controls.images.value;
 
-    console.log(productImages)
     if (productImages) {
       const newProductImages = productImages.filter(image => image !== imageName);
       this.productForm.controls.images.setValue(newProductImages);
     }
-
   }
 }
