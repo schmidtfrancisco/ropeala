@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, input, OnChanges, SimpleChanges, viewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, input, OnChanges, output, SimpleChanges, viewChild } from '@angular/core';
 import { ProductImagePipe } from '@products/pipes/product-image-pipe';
 import { ChevronLeft, ChevronRight, LucideAngularModule } from 'lucide-angular';
 import Swiper from 'swiper';
@@ -17,6 +17,9 @@ import { EffectCube, EffectCreative, Navigation, Pagination } from 'swiper/modul
 })
 export class ProductCarousel implements AfterViewInit, OnChanges {
   images = input.required<string[]>();
+  deleteOption = input<boolean>(false);
+  loop = input<boolean>(true);
+  deleteImage = output<string>();
   swiper: Swiper | null = null;
   swiperDiv = viewChild.required<ElementRef>('swiperDiv');
   prevButton = viewChild.required<ElementRef>('prevButton');
@@ -33,14 +36,9 @@ export class ProductCarousel implements AfterViewInit, OnChanges {
 
     if (!this.swiper) return;
 
-    this.swiper.destroy(true, true);
-
-    const paginationEl: HTMLDivElement = this.swiperDiv().nativeElement?.querySelector('.swiper-pagination');
-    paginationEl.innerHTML = ''; 
-
-    setTimeout(() => {
-      this.swiperInit();
-    }, 100);
+    queueMicrotask(() => {
+      this.swiper?.update();
+    });
   }
 
   swiperInit() {
@@ -50,7 +48,7 @@ export class ProductCarousel implements AfterViewInit, OnChanges {
     this.swiper = new Swiper(element, {
       // Optional parameters
       direction: 'horizontal',
-      loop: true,
+      loop: this.loop(),
       modules: [EffectCube, Pagination, Navigation],
       effect: 'cube',
 

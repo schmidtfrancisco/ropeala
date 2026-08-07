@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import { Component, computed, ElementRef, inject, input, OnInit, signal, viewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductCarousel } from '@products/components/product-carousel/product-carousel';
 import { Product, Size } from '@products/interfaces/products-response.interface';
@@ -7,6 +7,7 @@ import { FormErrorLabel } from "@shared/components/form-error-label/form-error-l
 import { ProductsService } from '@products/services/products.service';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'product-details',
@@ -19,14 +20,7 @@ export class ProductDetails implements OnInit {
   fb = inject(FormBuilder);
   productsService = inject(ProductsService);
   wasSaved = signal(false);
-  tempImages = signal<string[]>([]);
-  productImages = computed<string[]>(() => [
-    ...this.product().images,
-    ...this.tempImages()
-  ])
-
-  imageFileList: FileList|null = null;
-
+  imagesInput = viewChild.required<ElementRef>('imagesInput');
   productForm = this.fb.group({
     title: ['', Validators.required],
     description: ['', Validators.required],
@@ -38,6 +32,18 @@ export class ProductDetails implements OnInit {
     tags: [''],
     gender: ['men', [Validators.required, Validators.pattern(/men|women|kid|unisex/)]],
   })
+
+  existingImages = toSignal(
+    this.productForm.controls.images.valueChanges,
+    { initialValue: this.productForm.controls.images.value }
+  )
+  imageFilesMap = signal<Map<string, File>>(new Map());
+  tempImagesUrls = computed(() => Array.from(this.imageFilesMap().keys()));
+  productImages = computed<string[]>(() => [
+    ...(this.existingImages() ?? [] ),
+    ...this.imageFilesMap().keys()
+  ])
+
 
   readonly sizes = Object.values(Size);
 
@@ -51,7 +57,6 @@ export class ProductDetails implements OnInit {
   }
 
   onSizeChange(size: string) {
-    console.log('OLA')
     const currentSizes = this.productForm.value.sizes ?? [];
     if (currentSizes.includes(size)) {
       currentSizes.splice(currentSizes.indexOf(size), 1);
@@ -78,11 +83,13 @@ export class ProductDetails implements OnInit {
         ?? []
     };
 
+    const imageFiles = Array.from(this.imageFilesMap().values());
+    console.log(imageFiles)
     if (this.product().id === 'new') {
-      const product = await firstValueFrom(this.productsService.createProduct(productLike, this.imageFileList ?? undefined));
+      const product = await firstValueFrom(this.productsService.createProduct(productLike, imageFiles));
       this.router.navigate(['/admin/products', product.id]);
     } else {
-      await firstValueFrom(this.productsService.updateProduct(this.product().id, productLike, this.imageFileList ?? undefined));
+      await firstValueFrom(this.productsService.updateProduct(this.product().id, productLike, imageFiles));
     }
 
     this.wasSaved.set(true);
@@ -92,16 +99,42 @@ export class ProductDetails implements OnInit {
   }
 
   onFilesChange(files: FileList | null) {
-    if (!files) {
-      this.tempImages.set([]);
-    }
-    this.imageFileList = files;
-    const imagesUrls = Array.from(files ?? []).map(file =>
-      URL.createObjectURL(file)
-    );
+    const input: HTMLInputElement = this.imagesInput().nativeElement;
+    if (!input || !files) return;
 
-    this.tempImages.set(imagesUrls);
-    console.log(this.productImages())
+    console.log(files)
+    const fileList = Array.from(files ?? []);
+    input.value = '';
+
+    this.imageFilesMap.update(current => {
+      const map = new Map(current);
+
+      fileList.forEach(file => {
+        const imageUrl = URL.createObjectURL(file);
+        map.set(imageUrl, file);
+      })
+
+      return map;
+    })
   }
 
+  onImageDeletion(imageName: string) {
+    if (imageName.startsWith('blob:')) {
+      this.imageFilesMap.update(current => {
+        const map = new Map(current);
+        map.delete(imageName);
+        return map;
+      });
+      return;
+    }
+
+    const productImages = this.productForm.controls.images.value;
+
+    console.log(productImages)
+    if (productImages) {
+      const newProductImages = productImages.filter(image => image !== imageName);
+      this.productForm.controls.images.setValue(newProductImages);
+    }
+
+  }
 }

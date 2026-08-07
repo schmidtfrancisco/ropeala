@@ -16,41 +16,61 @@
     <!-- Datos generales -->
     <div class="flex flex-col gap-2 px-4 grow lg:pl-8">
       <h2 class="text-2xl font-bold h-12 text-slate-800 font-montserrat">Datos generales</h2>
-      <input type="text" placeholder="Título" class="input input-bordered w-full" formControlName="title"
-        [class.border-red-600]="productForm.get('title')?.errors ?? false" />
+
+      <label class="input w-full pl-0">
+        <span class="font-semibold h-full py-2 px-4 bg-base-200 rounded-s-lg min-w-24 text-center">Título</span>
+        <input type="text" placeholder="Título" class="grow sm:ml-4" formControlName="title"
+          [class.border-red-600]="productForm.get('title')?.errors ?? false" />
+      </label>
       <form-error-label [control]="productForm.get('title')!" />
 
-      <input type="text" placeholder="Slug" class="input input-bordered w-full" formControlName="slug"
-        [class.border-red-600]="productForm.get('slug')?.errors ?? false" />
+      <label class="input w-full pl-0">
+        <span class="font-semibold h-full py-2 px-4 bg-base-200 rounded-s-lg min-w-24 text-center">Slug</span>
+        <input type="text" placeholder="Slug" class="grow sm:ml-4" formControlName="slug"
+          [class.border-red-600]="productForm.get('slug')?.errors ?? false" />
+      </label>
       <form-error-label [control]="productForm.get('slug')!" />
 
-      <textarea class="textarea textarea-bordered w-full mt-2" placeholder="Descripción" rows="6"
-        formControlName="description"
-        [class.border-red-600]="productForm.get('description')?.errors ?? false"></textarea>
+      <fieldset class="fieldset">
+        <legend class="fieldset-legend text-sm">Descripción</legend>
+        <textarea class="textarea textarea-bordered w-full" placeholder="Descripción" rows="6"
+          formControlName="description"
+          [class.border-red-600]="productForm.get('description')?.errors ?? false"></textarea>
+      </fieldset>
       <form-error-label [control]="productForm.get('description')!" />
 
       <h2 class="text-lg font-bold font-montserrat">Datos de venta</h2>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <input type="number" placeholder="Precio" class="input input-bordered w-full" formControlName="price"
-            [class.border-red-600]="productForm.get('price')?.errors ?? false" />
+          <label class="input w-full pl-0">
+            <span class="font-semibold h-full py-2 px-4 bg-base-200 rounded-s-lg min-w-24 text-center">Precio $</span>
+            <input type="number" placeholder="Precio" class="grow sm:ml-4" formControlName="price"
+              [class.border-red-600]="productForm.get('price')?.errors ?? false" />
+          </label>
           <form-error-label [control]="productForm.get('price')!" />
         </div>
         <div>
-          <input type="number" placeholder="Inventario" class="input input-bordered w-full" formControlName="stock"
-            [class.border-red-600]="productForm.get('stock')?.errors ?? false" />
+          <label class="input w-full pl-0">
+            <span class="font-semibold h-full py-2 px-4 bg-base-200 rounded-s-lg min-w-24 text-center">Stock</span>
+            <input type="number" placeholder="Inventario" class="grow sm:ml-4" formControlName="stock"
+              [class.border-red-600]="productForm.get('stock')?.errors ?? false" />
+          </label>
           <form-error-label [control]="productForm.get('stock')!" />
         </div>
       </div>
 
       <!-- tags -->
-      <input type="text" placeholder="Tags" class="input input-bordered w-full" formControlName="tags"
-        [class.border-red-600]="productForm.get('tags')?.errors ?? false" />
+      <label class="input w-full pl-0">
+        <span class="font-semibold h-full py-2 px-4 bg-base-200 rounded-s-lg min-w-24 text-center">Tags</span>
+        <input type="text" placeholder="Tags" class="grow sm:ml-4" formControlName="tags"
+          [class.border-red-600]="productForm.get('tags')?.errors ?? false" />
+      </label>
       <form-error-label [control]="productForm.get('tags')!" />
 
       <!-- Botones para el género -->
-      <div class="grid grid-cols-4 gap-2 mt-4">
+      <legend class="fieldset-legend text-sm">Género</legend>
+      <div class="grid grid-cols-4 gap-2">
         <!-- <button class="btn btn-sm btn-outline">Masculino</button> -->
         <button class="btn btn-sm" [class.btn-info]="productForm.value.gender === 'men'" type="button"
           (click)="productForm.patchValue({ gender: 'men' })">
@@ -71,7 +91,8 @@
       </div>
 
       <!-- Sizes -->
-      <div class="grid grid-cols-6 gap-2 mt-4">
+      <legend class="fieldset-legend text-sm">Talles disponibles</legend>
+      <div class="grid grid-cols-6 gap-2">
         @for (size of sizes; track size) {
         <button class="btn btn-sm" type="button" (click)="onSizeChange(size)"
           [class.btn-neutral]="productForm.value.sizes?.includes(size)">
@@ -82,16 +103,26 @@
     </div>
 
     <!-- Imágenes -->
-    <div class="flex flex-col gap-6 items-center 2xl:px-16 lg:max-w-1/2">
-
-      <product-carousel [images]="productImages()" class="block min-w-0 w-full lg:w-2/3" />
+    <div class="flex flex-col gap-6 items-center 2xl:px-16 lg:max-w-1/2 relative">
+      <product-carousel [images]="productImages()" [loop]=" false" [deleteOption]="true" (deleteImage)="onImageDeletion($event)" class="block min-w-0 w-full lg:w-2/3" />
 
       <input type="file" multiple accept="image/*" class="file-input file-input-bordered w-2/3 mt-4"
         (change)="onFilesChange(imagesInput.files)" #imagesInput />
 
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-        @for (image of tempImages(); track image) {
-        <img [src]="image" alt="Temporal image" class="w-full rounded-2xl object-cover" />
+        @for (image of tempImagesUrls(); track image) {
+        <div class="relative">
+          <img [src]="image" alt="Temporal image" class="w-full rounded-2xl object-cover" />
+          <button type="button" (click)="onImageDeletion(image)" class="absolute btn btn-circle btn-soft btn-error btn-xs top-2 right-2 z-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="icon icon-tabler icons-tabler-outline icon-tabler-x">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M18 6l-12 12" />
+            <path d="M6 6l12 12" />
+          </svg>
+        </button>
+        </div>
         }
       </div>
     </div>

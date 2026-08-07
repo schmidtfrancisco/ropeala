@@ -79,8 +79,8 @@ export class ProductsService {
       );
   }
   
-  createProduct(productLike: Partial<Product>, imageFileList?: FileList): Observable<Product> {
-    return this.uploadImages(imageFileList)
+  createProduct(productLike: Partial<Product>, imageFiles?: File[]): Observable<Product> {
+    return this.uploadImages(imageFiles)
       .pipe(
         tap(imageNames => console.log(imageNames)),
         map(imageNames => ({
@@ -94,11 +94,11 @@ export class ProductsService {
       );
   }
 
-  updateProduct(id: string, productLike: Partial<Product>, imageFileList?: FileList): Observable<Product> {
+  updateProduct(id: string, productLike: Partial<Product>, imageFiles?: File[]): Observable<Product> {
     const currentImages = productLike.images ?? [];
-    return this.uploadImages(imageFileList)
+    return this.uploadImages(imageFiles)
       .pipe(
-        tap(imageNames => console.log(imageNames)),
+        tap(imageNames => console.log('Hola',imageNames)),
         map(imageNames => ({
           ...productLike,
           images: [...currentImages, ...imageNames]
@@ -125,10 +125,10 @@ export class ProductsService {
     console.log('Cache actualizado');
   }
 
-  uploadImages(images?: FileList): Observable<string[]> {
-    if (!images) return of([]);
+  uploadImages(images?: File[]): Observable<string[]> {
+    if (!images || images.length === 0) return of([]);
 
-    const uploadObservables = Array.from(images).map(imageFile => 
+    const uploadObservables = images.map(imageFile => 
       this.uploadImage(imageFile)
     );
 

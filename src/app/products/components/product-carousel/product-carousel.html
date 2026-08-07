@@ -4,12 +4,23 @@
   <div class="swiper-wrapper">
     <!-- Slides -->
     @for (imageName of images(); track imageName) {
-    <div class="swiper-slide">
+    <div class="swiper-slide relative bg-transparent">
       <img [src]="imageName | productImage" class="h-full w-full rounded-2xl object-contain">
+      @if (deleteOption()) {
+      <button type="button" class="absolute btn btn-circle btn-soft btn-error top-2 right-2" (click)="deleteImage.emit(imageName)">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="icon icon-tabler icons-tabler-outline icon-tabler-x">
+          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+          <path d="M18 6l-12 12" />
+          <path d="M6 6l12 12" />
+        </svg>
+      </button>
+      }
     </div>
     }
     @empty {
-    <div class="swiper-slide">
+    <div class="swiper-slide relative">
       <img [src]="'' | productImage" class="h-full w-full rounded-2xl object-contain">
     </div>
     }
