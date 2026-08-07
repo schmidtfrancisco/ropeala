@@ -5,7 +5,7 @@
       <tr>
         <th>
           <label>
-            <input type="checkbox" class="checkbox" />
+            <input type="checkbox" class="checkbox" (change)="onAllProductsSelected()"/>
           </label>
         </th>
         <th>Título</th>
@@ -19,7 +19,7 @@
       <tr>
         <th>
           <label>
-            <input type="checkbox" class="checkbox" />
+            <input type="checkbox" class="checkbox" [checked]="allChecked()" (change)="checkedProducts.emit(product.id)" />
           </label>
         </th>
         <td>

@@ -99,7 +99,6 @@ export class ProductsService {
     const currentImages = productLike.images ?? [];
     return this.uploadImages(imageFiles)
       .pipe(
-        tap(imageNames => console.log('Hola',imageNames)),
         map(imageNames => ({
           ...productLike,
           images: [...currentImages, ...imageNames]
@@ -113,7 +112,29 @@ export class ProductsService {
       )
   }
 
-  updateProductCache(product: Product, verifyProductsCache: boolean = true) {
+  deleteProducts(productIds: string[]): Observable<ApiResponse> {
+    if (productIds.length === 0) return of(this.handleDeletionSuccess());
+
+    const deletionObservables = productIds.map(productId => 
+      this.deleteProduct(productId)
+    );
+
+    return forkJoin(deletionObservables)
+      .pipe(
+        map(() => this.handleDeletionSuccess()),
+        catchError(() => this.handleDeletionError())
+      );
+  }
+
+  deleteProduct(productId: string): Observable<ApiResponse> {
+    return this.http.delete(`${BASE_URL}/products/${productId}`)
+      .pipe(
+        tap(() => this.deleteFromProductCache(productId)),
+        map(() => this.handleDeletionSuccess()),
+      )
+  }
+
+  private updateProductCache(product: Product, verifyProductsCache: boolean = true) {
     const productId = product.id;
     this.productCache.set(productId, product);
 
@@ -124,8 +145,15 @@ export class ProductsService {
         });
       });
     }
+  }
 
-    console.log('Cache actualizado');
+  private deleteFromProductCache(productId: string) {
+    this.productCache.delete(productId);
+    this.productsCache.forEach(productResponse => {
+      productResponse.products = productResponse.products.filter(product => 
+        product.id !== productId
+      );
+    });
   }
 
   uploadImages(images?: File[]): Observable<string[]> {
@@ -163,5 +191,21 @@ export class ProductsService {
       response: product
     }
     return apiResponse;
+  }
+
+  private handleDeletionSuccess() {
+    const apiResponse: ApiResponse = {
+      success: true,
+      error: '',
+    }
+    return apiResponse;
+  }
+
+  private handleDeletionError() {
+    const apiResponse: ApiResponse = {
+      success: false,
+      error: 'Ocurrió un error inesperado al eliminar el/los producto/s.',
+    }
+    return of(apiResponse);
   }
 }

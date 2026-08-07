@@ -103,7 +103,6 @@ export class ProductDetails implements OnInit {
       });
       return;
     }
-    console.log(apiResponse.response?.id)
 
     this.router.navigate(['/admin/products', apiResponse.response!.id]);
 
